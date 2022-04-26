@@ -1,7 +1,6 @@
 import pandas as pd
 import re
 import nltk
-import tensorflow
 
 from nltk.tokenize import word_tokenize as wt
 from nltk.corpus import stopwords
@@ -32,7 +31,7 @@ vectorizerValue = input("Enter your value: ")
 
 # read columns of text and sentiment of movie reviews dataset
 columns = ["sentiment", "review"]
-review_df = pd.read_csv("../Data/IMDB_Dataset_small.csv", usecols=columns)
+review_df = pd.read_csv("../Data/IMDB_Dataset.csv", usecols=columns)
 reviews = review_df.review.values
 sentiments_initial = review_df.sentiment.values
 
@@ -43,7 +42,7 @@ nltk.download('stopwords')
 # pre-processing
 spell = Speller(lang='en')
 stemmer = PorterStemmer()
-data = []
+reviews_processed = []
 
 for i in range(len(reviews)):
     review = reviews[i]
@@ -65,7 +64,7 @@ for i in range(len(reviews)):
     processed_review_final = " ".join(processed_review_initial)
     if len(processed_review_final) == 0:
         review_processed_final = ''
-    data.append(processed_review_final)
+    reviews_processed.append(processed_review_final)
 
 # prepare output label
 sentiments = []
@@ -77,9 +76,7 @@ for i in range(len(sentiments_initial)):
         sentiments.append(1)
 
 # split train and test data
-X_train, X_test, y_train_final, y_test_actual = train_test_split(reviews, sentiments, train_size=0.9)
-
-print(y_train_final)
+X_train, X_test, y_train_final, y_test_actual = train_test_split(reviews_processed, sentiments, train_size=0.9)
 
 # extract features from text
 if vectorizerValue == 1:
